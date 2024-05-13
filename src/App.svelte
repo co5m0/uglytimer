@@ -59,7 +59,6 @@
   }
 
   function stopTimer() {
-    logger("stop timer call");
     timer.isPlaying = false;
     clearInterval(intervalID);
   }
@@ -109,7 +108,7 @@
 
   function enableNotification() {
     if (notificationPermission === "denied" && !notificationFlag) {
-      Notification.requestPermission().then(function(result) {
+      Notification.requestPermission().then(function (result) {
         notificationPermission = result;
       });
     }
@@ -117,7 +116,29 @@
 
   document.addEventListener("timeout", e => {
     let ofs = 0;
-    let backgroundFlash = setInterval(function() {
+    const nerdMovieQuotes = [
+      "May the Force be with you.", // Star Wars
+      "Live long and prosper.", // Star Trek
+      "I'll be back.", // The Terminator
+      "You're gonna need a bigger boat.", // Jaws
+      "I see dead people.", // The Sixth Sense
+      "My name is Inigo Montoya. You killed my father. Prepare to die.", // The Princess Bride",
+      "I am your father.", // Star Wars: The Empire Strikes Back
+      "There's no place like home.", // The Wizard of Oz
+      "I'm the king of the world!", // Titanic
+      "Elementary, my dear Watson.", // Sherlock Holmes
+      "I'm Batman.", // Batman Begins
+      "I'm a Jedi, like my father before me.", // Star Wars: The Force Awakens
+      "I am Groot.", // Guardians of the Galaxy
+      "I'm gonna make him an offer he can't refuse.", // The Godfather
+      "Show me the money!",
+      // Jerry Maguire
+      "You're killing me, Smalls.", // The Sandlot
+      "I'll have what she's having.", // When Harry Met Sally
+      "You've got to ask yourself one question: 'Do I feel lucky?' Well, do ya, punk?", // Dirty Harry
+      "I'm the Dude." // The Big Lebowski
+    ];
+    let backgroundFlash = setInterval(function () {
       document.body.style.background =
         "rgba(" +
         Math.floor(Math.random() * 256) +
@@ -135,9 +156,9 @@
       document.body.style.background = "transparent";
     }, 1900);
     if (notificationPermission === "granted" && notificationFlag) {
-      const text = "Hey your time is out !!";
+      const text = Math.random().floor(nerdMovieQuotes.length);
       const img = "https://img.icons8.com/clouds/100/000000/timer.png";
-      var notification = new Notification("To do list", {
+      var notification = new Notification("Ugly timer over", {
         body: text,
         icon: img
       });
@@ -147,7 +168,7 @@
 </script>
 
 <style>
-  .container * {
+    .container * {
     -moz-user-select: none;
     -webkit-user-select: none;
     -ms-user-select: none;
@@ -163,6 +184,11 @@
   button {
     border: none;
     background-color: darksalmon;
+  }
+
+  p {
+    padding: 0;
+    margin: 0;
   }
 
   .container-crono {
@@ -182,13 +208,9 @@
     padding: 3px;
   }
 
-  .progressbar > div {
+  .progressbar>div {
     background-color: violet;
     height: 20px;
-  }
-
-  .checkbox {
-    padding-top: 10px;
   }
 
   .whited {
@@ -220,6 +242,31 @@
     color: hotpink;
   }
 
+  /* Checkbox */
+
+  .checkbox {
+    display: inline-block;
+    position: relative;
+    width: 20px;
+    height: 20px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    background-color: #fff;
+    cursor: pointer;
+  }
+
+  .checkbox input[type="checkbox"] {
+    display: none;
+  }
+
+  .checkbox input[type="checkbox"]:checked+.checkbox-mark {
+    display: block;
+  }
+
+  .pointer {
+    cursor: pointer;
+  }
+
   @media only screen and (min-width: 768px) {
     .container-crono {
       width: 720px;
@@ -241,32 +288,37 @@
     </div>
   </div>
   <div class="row adjust-time">
-    <div class="">
-      <h1 on:click={increaseTimerMinutes}>+</h1>
+    <div>
+      <div class="pointer">
+        <h1 on:click={increaseTimerMinutes}>+</h1>
+      </div>
       <div />
       <h2>MINUTES</h2>
       <div />
-      <h1 on:click={decreaseTimerMinutes}>-</h1>
+      <div class="pointer">
+        <h1 on:click={decreaseTimerMinutes}>-</h1>
+      </div>
     </div>
-    <div class="">
-      <h1 on:click={increaseTimerSeconds}>+</h1>
+    <div>
+      <div class="pointer">
+        <h1 on:click={increaseTimerSeconds}>+</h1>
+      </div>
       <div />
       <h2>SECONDS</h2>
       <div />
-      <h1 on:click={decreaseTimerSeconds}>-</h1>
+      <div class="pointer">
+        <h1 on:click={decreaseTimerSeconds}>-</h1>
+      </div>
     </div>
   </div>
   {#if timer.isPlaying}
-    <button on:click={stopTimer}>PAUSE</button>
+  <button on:click={stopTimer}>PAUSE</button>
   {:else}
-    <button on:click={startTimer}>START</button>
+  <button on:click={startTimer}>START</button>
   {/if}
   <button on:click={resetTimer}>RESET</button>
   <div class="row dontknow">
-    <input
-      type="checkbox"
-      bind:checked={notificationFlag}
-      on:click={enableNotification} />
+    <input type="checkbox" class="checkbox " bind:checked={notificationFlag} on:click={enableNotification} />
     <p class="whited">Check this fancy box if you want an ugly notification</p>
   </div>
 
